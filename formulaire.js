@@ -1,5 +1,5 @@
 // URL de l'API sur Vercel (remplace par l'URL réelle)
-const API_URL = 'https://form-06-11-git-main-jeremylets-projects.vercel.app/submit'; // Remplace par l'URL de ton API sur Vercel
+const API_URL = 'https://form-06-11-1roshch2n-jeremylets-projects.vercel.app/submit'; // Remplace par l'URL de ton API sur Vercel
 
 // Sélection du formulaire par son ID
 const form = document.getElementById('monFormulaire'); // Assure-toi que l'ID correspond à ton formulaire
