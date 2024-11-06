@@ -4,21 +4,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulaire d'enregistrement</title>
+    <title>Formulaire de Soumission</title>
+    <!-- Lien vers Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>
-    <h1>Formulaire d'enregistrement</h1>
+<body class="bg-gray-100 font-sans antialiased">
 
-    <form id="formulaire" method="POST">
-        <label for="nomOuvrier">Nom de l'ouvrier:</label>
-        <input type="text" id="nomOuvrier" name="nomOuvrier" required><br><br>
+    <div class="max-w-xl mx-auto p-6 bg-white rounded-lg shadow-lg mt-6">
+        <h1 class="text-2xl font-bold text-center text-gray-700 mb-4">Formulaire de Soumission de Travail</h1>
 
-        <label for="email">Email de l'ouvrier:</label>
-        <input type="email" id="email" name="email" required><br><br>
+        <form id="form" action="http://localhost:3000/submit" method="POST">
+            <!-- Champ texte : Nom du client -->
+            <div class="mb-4">
+                <label for="nomClient" class="block text-sm font-medium text-gray-700">Nom du client :</label>
+                <input type="text" id="nomClient" name="nomClient"
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required>
+            </div>
 
-        <button type="submit">Envoyer</button>
-    </form>
+            <!-- Champ à choix unique : Prestation réalisée -->
+            <div class="mb-4">
+                <label for="prestation" class="block text-sm font-medium text-gray-700">Prestation réalisée :</label>
+                <select id="prestation" name="prestation"
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required>
+                    <option value="">Sélectionnez la prestation</option>
+                    <option value="Labour">Labour</option>
+                    <option value="Plantation">Plantation</option>
+                    <option value="Entretien">Entretien</option>
+                    <option value="Récolte">Récolte</option>
+                </select>
+            </div>
+
+            <!-- Champ nombre : Nombre d'heures / hectares du travail effectué -->
+            <div class="mb-4">
+                <label for="nombreHeures" class="block text-sm font-medium text-gray-700">Nombre d'heures / hectares du
+                    travail effectué :</label>
+                <input type="number" id="nombreHeures" name="nombreHeures"
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required>
+            </div>
+
+            <!-- Champ à choix unique : Travail terminé ? -->
+            <div class="mb-4">
+                <label for="travailTermine" class="block text-sm font-medium text-gray-700">Travail terminé ?</label>
+                <select id="travailTermine" name="travailTermine"
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required>
+                    <option value="">Sélectionnez</option>
+                    <option value="Oui">Oui</option>
+                    <option value="Non">Non</option>
+                </select>
+            </div>
+
+            <!-- Champ texte long : Observations particulières -->
+            <div class="mb-4">
+                <label for="observations" class="block text-sm font-medium text-gray-700">Observations particulières
+                    :</label>
+                <textarea id="observations" name="observations" rows="4"
+                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+            </div>
+
+            <!-- Bouton de soumission -->
+            <div class="flex justify-center">
+                <button type="submit"
+                    class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">Soumettre</button>
+            </div>
+        </form>
+    </div>
 
     <script src="formulaire.js"></script>
 </body>
