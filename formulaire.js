@@ -1,60 +1,43 @@
-const express = require("express");
-const cors = require("cors");
-const fetch = require("node-fetch");
-const app = express();
+// URL de ton API sur Vercel (remplace par l'URL réelle)
+const API_URL = 'https://alix-d38t5b6mh-jeremylets-projects.vercel.app/submit'; // Remplace par l'URL de ton API sur Vercel
 
-// Middleware
-app.use(cors());
-app.use(express.json());
+// Sélection du formulaire
+const form = document.getElementById('monFormulaire'); // Assure-toi que l'ID correspond à ton formulaire
 
-const AIRTABLE_BASE_ID = "appev8LbrXqkpUt6g";
-const AIRTABLE_TABLE_NAME = "tbl67d8eZCOyy8JOO";
-const AIRTABLE_API_KEY = "patV8jMWMMq3TTgrM.bf8bb3b761a9a2639cd912f7d59bc701268abe134583e89d4d2c77b29966ebfa";
+// Écouteur d'événement pour la soumission du formulaire
+form.addEventListener('submit', function (event) {
+    event.preventDefault(); // Empêche le comportement par défaut de soumettre un formulaire
 
-// Route pour la soumission du formulaire
-app.post("/submit", async (req, res) => {
-    const { fields } = req.body;
-
-    // Validation (vous pouvez ajuster selon les besoins)
-    if (!fields.clientName || !fields.prestation || !fields.hours || !fields.workDone) {
-        return res.status(400).json({ message: "Tous les champs obligatoires doivent être remplis." });
-    }
-
-    // Préparer la requête pour Airtable
-    const airtableData = {
-        fields: {
-            "Nom du client": fields.clientName,
-            "Prestation réalisée": fields.prestation,
-            "Nombre d'heures / hectares du travail effectué": fields.hours,
-            "Travail terminé ?": fields.workDone,
-            "Observations particulières": fields.observations,
-        }
+    // Récupérer les données du formulaire
+    const formData = new FormData(form);
+    const data = {
+        nomClient: formData.get('nomClient'),
+        prestation: formData.get('prestation'),
+        heuresHectares: formData.get('heuresHectares'),
+        travailTermine: formData.get('travailTermine'),
+        observations: formData.get('observations')
     };
 
-    try {
-        const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_NAME}`, {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${AIRTABLE_API_KEY}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(airtableData)
+    // Afficher les données dans la console (pour tester)
+    console.log(data);
+
+    // Envoi des données vers l'API sur Vercel
+    fetch(API_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+        .then(response => response.json()) // Conversion de la réponse en JSON
+        .then(data => {
+            // Affichage d'un message de succès
+            alert('Formulaire soumis avec succès!');
+            // Réinitialisation du formulaire après soumission
+            form.reset();
+        })
+        .catch(error => {
+            // Affichage d'un message d'erreur si quelque chose ne va pas
+            alert('Erreur lors de la soumission du formulaire : ' + error);
         });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            return res.status(200).json(data);
-        } else {
-            return res.status(400).json(data);
-        }
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Erreur de serveur." });
-    }
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
 });
