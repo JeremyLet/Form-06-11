@@ -8,38 +8,26 @@ const AIRTABLE_BASE_URL = process.env.AIRTABLE_BASE_URL;
 const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY;
 
 module.exports = async (req, res) => {
+    // Vérifier que la méthode de la requête est POST
     if (req.method === 'POST') {
+        // Ajouter les en-têtes CORS pour autoriser les requêtes venant de ton domaine
+        res.setHeader('Access-Control-Allow-Origin', 'https://jeremylet.github.io'); // Ton domaine GitHub Pages
+        res.setHeader('Access-Control-Allow-Methods', 'POST');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+        // Traitement des données de la requête
+        const data = req.body;
+
         try {
-            // Récupérer les données du formulaire
-            const { nomClient, prestation, heuresHectares, travailTermine, observations } = req.body;
+            // Ajouter ici la logique pour envoyer les données à Airtable ou autre
+            // Exemple: await someDatabaseFunction(data);
 
-            // Préparer les données pour Airtable
-            const data = {
-                fields: {
-                    'Nom du client': nomClient,
-                    'Prestation réalisée': prestation,
-                    'Nombre d\'heures / hectares du travail effectué': heuresHectares,
-                    'Travail terminé ?': travailTermine,
-                    'Observations particulières': observations,
-                }
-            };
-
-            // Envoi des données vers Airtable
-            const response = await axios.post(AIRTABLE_BASE_URL, data, {
-                headers: {
-                    'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            // Répondre au formulaire avec un message de succès
-            res.status(200).json({ message: 'Données envoyées avec succès' });
+            res.status(200).json({ message: 'Données reçues avec succès' });
         } catch (error) {
-            // Si une erreur se produit, renvoyer un message d'erreur
-            res.status(500).json({ error: 'Erreur lors de l\'envoi des données', details: error.message });
+            res.status(500).json({ error: 'Erreur lors du traitement des données' });
         }
     } else {
-        // Si ce n'est pas une requête POST, renvoyer une erreur
+        // Si ce n'est pas une requête POST, on renvoie une erreur
         res.status(405).json({ error: 'Méthode non autorisée' });
     }
 };
