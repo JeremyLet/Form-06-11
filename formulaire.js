@@ -1,40 +1,60 @@
-// Sélectionner le formulaire
-const formulaire = document.getElementById('formulaire');
+const express = require("express");
+const cors = require("cors");
+const fetch = require("node-fetch");
+const app = express();
 
-formulaire.addEventListener('submit', async function (event) {
-    event.preventDefault(); // Empêche le formulaire de se soumettre normalement
+// Middleware
+app.use(cors());
+app.use(express.json());
 
-    // Récupérer les valeurs du formulaire
-    const nomOuvrier = document.getElementById('nomOuvrier').value;
-    const email = document.getElementById('email').value;
+const AIRTABLE_BASE_ID = "appev8LbrXqkpUt6g";
+const AIRTABLE_TABLE_NAME = "tbl67d8eZCOyy8JOO";
+const AIRTABLE_API_KEY = "patV8jMWMMq3TTgrM.bf8bb3b761a9a2639cd912f7d59bc701268abe134583e89d4d2c77b29966ebfa";
 
-    // Préparer les données à envoyer
-    const data = {
-        nomOuvrier: nomOuvrier,
-        email: email
+// Route pour la soumission du formulaire
+app.post("/submit", async (req, res) => {
+    const { fields } = req.body;
+
+    // Validation (vous pouvez ajuster selon les besoins)
+    if (!fields.clientName || !fields.prestation || !fields.hours || !fields.workDone) {
+        return res.status(400).json({ message: "Tous les champs obligatoires doivent être remplis." });
+    }
+
+    // Préparer la requête pour Airtable
+    const airtableData = {
+        fields: {
+            "Nom du client": fields.clientName,
+            "Prestation réalisée": fields.prestation,
+            "Nombre d'heures / hectares du travail effectué": fields.hours,
+            "Travail terminé ?": fields.workDone,
+            "Observations particulières": fields.observations,
+        }
     };
 
-    // Faire la requête POST vers le serveur Express
     try {
-        const response = await fetch('https://alix-jgwx8ni8i-jeremylets-projects.vercel.app/submit', {
-            method: 'POST',
+        const response = await fetch(`https://api.airtable.com/v0/${AIRTABLE_BASE_ID}/${AIRTABLE_TABLE_NAME}`, {
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json'
+                "Authorization": `Bearer ${AIRTABLE_API_KEY}`,
+                "Content-Type": "application/json"
             },
-            body: JSON.stringify(data) // Convertir les données en JSON
+            body: JSON.stringify(airtableData)
         });
 
-        const result = await response.json();
+        const data = await response.json();
 
-        // Vérifier si la requête a réussi
         if (response.ok) {
-            alert(result.message);
-            console.log('Réponse serveur:', result.data);
+            return res.status(200).json(data);
         } else {
-            alert('Erreur lors de l\'enregistrement.');
-            console.error('Erreur serveur:', result);
+            return res.status(400).json(data);
         }
     } catch (error) {
-        console.error('Erreur lors de la soumission du formulaire:', error);
+        console.error(error);
+        return res.status(500).json({ message: "Erreur de serveur." });
     }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
