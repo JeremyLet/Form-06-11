@@ -41,5 +41,5 @@ app.post('/submit', async (req, res) => {
 // Démarrer le serveur
 const port = 3000;
 app.listen(port, () => {
-    console.log(`Serveur en écoute sur http://localhost:${port}`);
+    console.log(`Serveur en écoute`);
 });

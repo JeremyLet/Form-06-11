@@ -16,7 +16,7 @@ formulaire.addEventListener('submit', async function (event) {
 
     // Faire la requête POST vers le serveur Express
     try {
-        const response = await fetch('http://localhost:3000/submit', {
+        const response = await fetch('https://alix-jgwx8ni8i-jeremylets-projects.vercel.app/submit', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
